@@ -1,0 +1,90 @@
+
+Sub VBA_hw()
+For Each ws In Worksheets
+
+  Dim lncount As Long
+  
+ lncount = ws.Cells(Rows.count, "A").End(xlUp).Row
+ 
+    ws.Range("A2:G" & lncount).Sort Key1:=Range("A2"), Order1:=xlAscending, Key2:=Range("B2"), Order2:=xlAscending
+
+    Dim Ticker As String
+    Dim yr_open As Double
+    Dim yr_close As Double
+    Dim Change As Double
+    Dim PctChange As Double
+    Dim obs As Long
+    Dim count As Long
+    Dim vol As LongLong
+
+    Ticker = ws.Cells(2, 1).Value
+    yr_open = ws.Cells(2, 3).Value
+    yr_close = ws.Cells(2, 6).Value
+    vol = ws.Cells(2, 7).Value
+    count = 2
+
+    ws.Cells(1, 9).Value = "Ticker"
+    ws.Cells(1, 10).Value = "Volume"
+    ws.Cells(1, 11).Value = "Change"
+    ws.Cells(1, 12).Value = "Percent Change"
+
+        For obs = 2 To lncount
+            If Ticker = ws.Cells(obs, 1).Value Then
+                yr_close = ws.Cells(obs, 6)
+                Change = yr_close - yr_open
+                If yr_open = 0 Then
+                    PctChange = 0
+                    Else: PctChange = Change / yr_open
+                End If
+            vol = vol + ws.Cells(obs, 7).Value
+            Else
+                ws.Cells(count, 9).Value = Ticker
+                ws.Cells(count, 10).Value = vol
+                ws.Cells(count, 11).Value = Change
+                ws.Cells(count, 12).Value = FormatPercent(PctChange, 2)
+                If PctChange > 0 Then ws.Cells(count, 12).Interior.Color = vbGreen
+                If PctChange < 0 Then ws.Cells(count, 12).Interior.Color = vbRed
+                Ticker = ws.Cells(obs, 1).Value
+                yr_open = ws.Cells(obs, 3).Value
+                vol = ws.Cells(obs, 7).Value
+                count = count + 1
+                End If
+        Next obs
+
+    ws.Range("N1").Value = "Greatest % increase"
+    ws.Range("N2").Value = "Greatest % decrease"
+    ws.Range("N3").Value = "Greatest total volume"
+
+    Dim gtIncrease As Double
+    Dim gtDecrease As Double
+    Dim gtVolume As LongLong
+    Dim obs2 As Long
+
+    gtIncrease = ws.Cells(2, 12)
+    gtDecrease = ws.Cells(2, 12)
+    gtVolume = ws.Cells(2, 10)
+
+    For obs2 = 2 To count
+        If gtIncrease < ws.Cells(obs2, 12).Value Then
+            gtIncrease = ws.Cells(obs2, 12).Value
+            ws.Range("O1").Value = ws.Cells(obs2, 9).Value
+            ws.Range("P1").Value = FormatPercent(ws.Cells(obs2, 12).Value, 2)
+        End If
+        If gtDecrease > ws.Cells(obs2, 12).Value Then
+            gtDecrease = ws.Cells(obs2, 12).Value
+            ws.Range("O2").Value = ws.Cells(obs2, 9).Value
+            ws.Range("P2").Value = FormatPercent(ws.Cells(obs2, 12).Value, 2)
+        End If
+        If gtVolume < ws.Cells(obs2, 10).Value Then
+            gtVolume = ws.Cells(obs2, 10).Value
+            ws.Range("O3").Value = ws.Cells(obs2, 9).Value
+            ws.Range("P3").Value = ws.Cells(obs2, 10).Value
+        End If
+    Next obs2
+
+
+Next ws
+
+End Sub
+
+
