@@ -1,3 +1,12 @@
+VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = "Sheet1"
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = False
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = True
 
 Sub VBA_hw()
 For Each ws In Worksheets
@@ -6,7 +15,7 @@ For Each ws In Worksheets
   
  lncount = ws.Cells(Rows.count, "A").End(xlUp).Row
  
-    ws.Range("A2:G" & lncount).Sort Key1:=Range("A2"), Order1:=xlAscending, Key2:=Range("B2"), Order2:=xlAscending
+    'ws.Range("A2:G" & lncount).Sort Key1:=Range("A2"), Order1:=xlAscending, Key2:=Range("B2"), Order2:=xlAscending
 
     Dim Ticker As String
     Dim yr_open As Double
@@ -42,8 +51,8 @@ For Each ws In Worksheets
                 ws.Cells(count, 10).Value = vol
                 ws.Cells(count, 11).Value = Change
                 ws.Cells(count, 12).Value = FormatPercent(PctChange, 2)
-                If PctChange > 0 Then ws.Cells(count, 12).Interior.Color = vbGreen
-                If PctChange < 0 Then ws.Cells(count, 12).Interior.Color = vbRed
+                If Change > 0 Then ws.Cells(count, 11).Interior.Color = vbGreen
+                If Change < 0 Then ws.Cells(count, 11).Interior.Color = vbRed
                 Ticker = ws.Cells(obs, 1).Value
                 yr_open = ws.Cells(obs, 3).Value
                 vol = ws.Cells(obs, 7).Value
